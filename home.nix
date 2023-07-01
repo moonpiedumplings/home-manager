@@ -45,7 +45,7 @@ with import ./nixglwrapper.nix {inherit pkgs config lib nixgl;};
     #nixgl wrapped stuff
     (nixGLWrap pkgs.vscode)
     (nixGLWrap pkgs.microsoft-edge)
-    #(nixGLWrap pkgs.firefox-bin)
+    (nixGLWrap pkgs.firefox-bin)
 
 
     #general tools and utilities
