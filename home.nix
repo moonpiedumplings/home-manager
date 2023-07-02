@@ -75,6 +75,7 @@ with import ./nixglwrapper.nix {inherit pkgs config lib nixgl;};
     pkgs.nmap
     pkgs.wireshark
     pkgs.metasploit
+    pkgs.aircrack-ng
 
     #creativity
     pkgs.manuskript
