@@ -64,7 +64,7 @@ with import ./nixglwrapper.nix {inherit pkgs config lib nixgl;};
 
     # development enviroment stuff
     quarto # see the imports above.
-    (pkgs.python311.withPackages(ps: with ps; [ jupyter]))
+    (pkgs.python311.withPackages(ps: with ps; [ jupyter ]))
     pkgs.poetry
 
     # general cli tools
@@ -76,6 +76,8 @@ with import ./nixglwrapper.nix {inherit pkgs config lib nixgl;};
     pkgs.wireshark
     pkgs.metasploit
     pkgs.aircrack-ng
+    pkgs.mdk4
+    pkgs.airgeddon
 
     #creativity
     pkgs.manuskript
@@ -83,6 +85,7 @@ with import ./nixglwrapper.nix {inherit pkgs config lib nixgl;};
     # storage and encryption
     pkgs.rclone
     pkgs.gocryptfs
+    pkgs.syncthing
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -110,4 +113,5 @@ with import ./nixglwrapper.nix {inherit pkgs config lib nixgl;};
   	bash.enable = true;
   	gh.enable = true;
   };
+  services.syncthing.enable = true;
 }
