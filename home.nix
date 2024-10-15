@@ -19,10 +19,11 @@
   # environment.
   home.packages = [
     pkgs-kbctl.kubectl
-
     pkgs.fluxcd
     pkgs.nixgl.nixGLIntel pkgs.nixgl.nixVulkanIntel
     pkgs.gzdoom
+    pkgs.age
+    pkgs.sops
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
