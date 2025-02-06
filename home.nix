@@ -24,6 +24,7 @@
     pkgs.gzdoom
     pkgs.age
     pkgs.sops
+    pkgs.nixd
   ];
 
   programs.man = {
