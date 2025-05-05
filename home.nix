@@ -20,6 +20,8 @@
   home.packages = [
     pkgs-kbctl.kubectl
     pkgs.fluxcd
+    pkgs.kubernetes-helm
+    pkgs.yaml-language-server
     pkgs.nixgl.nixGLIntel pkgs.nixgl.nixVulkanIntel
     pkgs.gzdoom
     pkgs.age
