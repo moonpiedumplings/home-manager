@@ -27,6 +27,7 @@
     pkgs.age
     pkgs.sops
     pkgs.nixd
+    pkgs.k9s
   ];
 
   programs.man = {
