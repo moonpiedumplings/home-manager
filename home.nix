@@ -22,8 +22,9 @@
     pkgs.fluxcd
     pkgs.kubernetes-helm
     pkgs.yaml-language-server
-    pkgs.nixgl.nixGLIntel pkgs.nixgl.nixVulkanIntel
-    pkgs.gzdoom
+    # pkgs.nixgl.nixGLIntel pkgs.nixgl.nixVulkanIntel
+    (config.lib.nixGL.wrappers.mesa pkgs.gzdoom)
+    (config.lib.nixGL.wrappers.mesa pkgs.mesa-demos)
     pkgs.age
     pkgs.sops
     pkgs.nixd
