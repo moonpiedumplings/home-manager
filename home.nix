@@ -27,7 +27,21 @@
     pkgs.age
     pkgs.sops
     pkgs.nixd
+
+    # kubectl plugins and tools
     pkgs.k9s
+    pkgs.kubectl-tree
+    pkgs.kubectl-doctor
+    pkgs.kubectl-example
+    pkgs.kubectl-view-secret
+    pkgs.kubectl-graph
+    pkgs.kubectl-images
+    pkgs.kubectl-explore
+    pkgs.kubectl-validate
+    pkgs.krelay
+    pkgs.kubectl-df-pv
+    pkgs.kubespy
+    pkgs.kubeshark
   ];
 
   programs.man = {
