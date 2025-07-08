@@ -13,18 +13,23 @@
   # You should not change this value, even if you update Home Manager. If you do
   # want to update the value, then make sure to first check the Home Manager
   # release notes.
-  home.stateVersion = "24.05"; # Please read the comment before changing.
+  home.stateVersion = "25.11"; # Please read the comment before changing.
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
+
+  nixGL = {
+    packages = pkgs.nixgl;
+    defaultWrapper = "mesa";
+  };
+
   home.packages = [
     pkgs-kbctl.kubectl
     pkgs.fluxcd
     pkgs.kubernetes-helm
     pkgs.yaml-language-server
-    # pkgs.nixgl.nixGLIntel pkgs.nixgl.nixVulkanIntel
+    pkgs.nixgl.nixGLIntel pkgs.nixgl.nixVulkanIntel
     (config.lib.nixGL.wrappers.mesa pkgs.gzdoom)
-    (config.lib.nixGL.wrappers.mesa pkgs.mesa-demos)
     pkgs.age
     pkgs.sops
     pkgs.nixd
