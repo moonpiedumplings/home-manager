@@ -30,7 +30,6 @@
     pkgs.yaml-language-server
     pkgs.nixgl.nixGLIntel pkgs.nixgl.nixVulkanIntel
     (config.lib.nixGL.wrappers.mesa pkgs.gzdoom)
-    (config.lib.nixGL.wrap pkgs.streamlink)
     pkgs.age
     pkgs.sops
     pkgs.nixd
