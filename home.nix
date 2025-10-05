@@ -35,6 +35,7 @@
     pkgs.nixd
 
     # kubectl plugins and tools
+    pkgs.kubectl-cnpg
     pkgs.k9s
     pkgs.kubectl-tree
     pkgs.kubectl-doctor
