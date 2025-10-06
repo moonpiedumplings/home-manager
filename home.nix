@@ -47,6 +47,7 @@
     pkgs.kubectl-validate
     pkgs.krelay
     pkgs.kubectl-df-pv
+    pkgs.kubectl-node-shell
     pkgs.kubespy
     pkgs.kubeshark
     pkgs.streamlink
