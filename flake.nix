@@ -20,7 +20,7 @@
             nixpkgs, pkgs-kubectl,
             home-manager, ... }:
     let
-      system = "x86_64-linux";
+      system = "${builtins.currentSystem}";
       pkgs = import nixpkgs {
         inherit system;
         overlays = [ nixgl.overlay ];

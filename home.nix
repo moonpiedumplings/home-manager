@@ -19,8 +19,8 @@
   # environment.
 
   nixGL = {
-    packages = pkgs.nixgl;
-    defaultWrapper = "mesa";
+   packages = pkgs.nixgl;
+   defaultWrapper = "mesa";
   };
 
   home.packages = [
@@ -50,7 +50,13 @@
     pkgs.kubectl-node-shell
     pkgs.kubespy
     pkgs.kubeshark
+
+    # various utilities
     pkgs.streamlink
+    pkgs.zellij
+
+    # logging
+    pkgs.lnav
   ];
 
   programs.man = {
