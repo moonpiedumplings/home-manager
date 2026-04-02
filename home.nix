@@ -50,6 +50,7 @@
     pkgs.kubectl-node-shell
     pkgs.kubespy
     pkgs.kubeshark
+    pkgs.cilium-cli
 
     # various utilities
     pkgs.streamlink

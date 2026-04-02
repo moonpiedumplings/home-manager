@@ -20,7 +20,7 @@
             nixpkgs, pkgs-kubectl,
             home-manager, ... }:
     let
-      system = "${builtins.currentSystem}";
+      system = "${stdenv.hostPlatform.system}";
       pkgs = import nixpkgs {
         inherit system;
         overlays = [ nixgl.overlay ];
