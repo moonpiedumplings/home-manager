@@ -18,9 +18,11 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
 
-  nixGL = {
+  targets.genericLinux.nixGL = {
    packages = pkgs.nixgl;
    defaultWrapper = "mesa";
+   # might cause issues
+   vulkan.enable = true;
   };
 
   home.packages = [
@@ -30,6 +32,7 @@
     pkgs.yaml-language-server
     pkgs.nixgl.nixGLIntel pkgs.nixgl.nixVulkanIntel
     (config.lib.nixGL.wrappers.mesa pkgs.gzdoom)
+    (config.lib.nixGL.wrappers.mesa pkgs.ares)
     pkgs.age
     pkgs.sops
     pkgs.nixd
@@ -58,6 +61,9 @@
 
     # logging
     pkgs.lnav
+
+    # github cli client + copilot
+    pkgs.gh
   ];
 
   programs.man = {
