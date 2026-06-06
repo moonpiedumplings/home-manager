@@ -1,10 +1,38 @@
-{ config, pkgs, pkgs-kbctl, ... }:
+{ config, pkgs, pkgs-kbctl, hermes, llm-agents, inputs, system, ... }:
+
+let 
+  hermes = inputs.hermes.packages.${system};
+  llm-agents = inputs.llm-agents.packages.${system};
+  every-agent = builtins.attrValues llm-agents;
+  # Not all agents are working so I filter out broken ones
+  #working-agents = builtins.filter
+  #(agent: !builtins.elem agent.name [ "aionui-2.1.11" ])
+  #every-agent;
+
+  # list of broken agents for filtering
+  broken-agents = [
+    "aionui"
+    "hermes-desktop"
+    "showboat"
+    "backlog-md"
+    "mistral-vibe"
+    #"openclaw"
+    # Not an agent
+    "flake-inputs"
+  ];
+
+  working-agents =  builtins.attrValues
+    #(builtins.removeAttrs llm-agents [ "aionui" "hermes-desktop" "showboat" ]);
+    (builtins.removeAttrs llm-agents broken-agents);
+
+  gpu-wrapped-agents = builtins.map config.lib.nixGL.wrappers.mesa working-agents;
+in
 
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "moonpie";
-  home.homeDirectory = "/home/moonpie";
+  home.username = builtins.getEnv "USER";
+  home.homeDirectory = builtins.getEnv "HOME";
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -22,7 +50,7 @@
    packages = pkgs.nixgl;
    defaultWrapper = "mesa";
    # might cause issues
-   vulkan.enable = true;
+   #  vulkan.enable = true;
   };
 
   home.packages = [
@@ -35,8 +63,7 @@
     (config.lib.nixGL.wrappers.mesa pkgs.ares)
     pkgs.age
     pkgs.sops
-    pkgs.nixd
-
+    
     # kubectl plugins and tools
     pkgs.kubectl-cnpg
     pkgs.k9s
@@ -64,7 +91,28 @@
 
     # github cli client + copilot
     pkgs.gh
-  ];
+
+    # llm agents
+    #(config.lib.nixGL.wrappers.mesa llm-agents.hermes-desktop)
+    #(config.lib.nixGL.wrappers.mesa hermes.full)
+    #(config.lib.nixGL.wrappers.mesa hermes.hermes-desktop)
+    #llm-agents.nanocoder
+    #llm-agents.omp
+    #llm-agents.opencode
+    #llm-agents.forgecode
+
+    # sandboxing features
+    #pkgs.fence
+
+
+    # nix dev stuff
+    pkgs.nixd
+    pkgs.nil
+
+  ] 
+  ++ gpu-wrapped-agents
+  
+  ;
 
   programs.man = {
     enable = true;

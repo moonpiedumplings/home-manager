@@ -13,11 +13,21 @@
       url = "github:nix-community/nixGL";
       # inputs.nixpkgs.follows = "nixpkgs";
       };
+    
+    # llm agents and stuff
+    hermes = {
+      url = "github:NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = {
+  outputs = inputs@{
             nixgl,
-            nixpkgs, pkgs-kubectl,
+            nixpkgs, pkgs-kubectl, hermes, llm-agents,
             home-manager, ... }:
     let
       system = "${builtins.currentSystem}";
@@ -32,7 +42,8 @@
         inherit pkgs;
 
         extraSpecialArgs = {
-          pkgs-kbctl = import pkgs-kubectl {inherit system;};
+           inherit inputs system hermes llm-agents nixgl;
+          pkgs-kbctl = import pkgs-kubectl { inherit system; };
         };
 
         # Specify your home configuration modules here, for example,
