@@ -16,9 +16,22 @@ let
     "showboat"
     "backlog-md"
     "mistral-vibe"
+    "codex"
     #"openclaw"
     # Not an agent
     "flake-inputs"
+    #"oh-my-opencode"
+    #"omp"
+    #"gno"
+    # This stuff seems to be failing due to npm network issues. 
+    # It's probably my home internet rather than broken packages
+    "reasonix"
+    "paseo-desktop"
+    "codegraph"
+    "gitbutler"
+    "but"
+    "openclaw"
+    "code"
   ];
 
   working-agents =  builtins.attrValues
