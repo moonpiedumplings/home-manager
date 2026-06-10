@@ -1,4 +1,5 @@
 {
+  # Must activate flake with --impure!!!
   description = "Home Manager configuration of moonpie";
 
   nixConfig = {

@@ -2,43 +2,60 @@
 
 let 
   hermes = inputs.hermes.packages.${system};
+
+  # borked or not needed hermes packages
+  broken-hermes = [ 
+    # Not needed, configkeys broken
+    "configKeys" "fix-lockfiles"
+
+    # Duplicates that break things
+    "hermes-full" "default" "messaging"
+   ];
+
+  working-hermes =  builtins.attrValues
+    (builtins.removeAttrs hermes broken-hermes);
+
+  gpu-wrapped-hermes = builtins.map config.lib.nixGL.wrappers.mesa working-hermes;
+
+
   llm-agents = inputs.llm-agents.packages.${system};
-  every-agent = builtins.attrValues llm-agents;
   # Not all agents are working so I filter out broken ones
-  #working-agents = builtins.filter
-  #(agent: !builtins.elem agent.name [ "aionui-2.1.11" ])
-  #every-agent;
 
   # list of broken agents for filtering
   broken-agents = [
-    "aionui"
-    "hermes-desktop"
+    #"aionui"   
     "showboat"
-    "backlog-md"
-    "mistral-vibe"
-    "codex"
-    #"openclaw"
+    # "backlog-md"
+    # "mistral-vibe"
+    # "codex"
+
     # Not an agent
     "flake-inputs"
-    #"oh-my-opencode"
-    #"omp"
-    #"gno"
+
     # This stuff seems to be failing due to npm network issues. 
     # It's probably my home internet rather than broken packages
-    "reasonix"
-    "paseo-desktop"
+    # Or it could be me being rate limited
+    #"reasonix"
+    #"paseo-desktop"
     "codegraph"
-    "gitbutler"
+    #"gitbutler"
     "but"
-    "openclaw"
+    #"openclaw"
+    
+    # conflicts with code-oss. Annoying.
     "code"
+
+    # Not broken but I am getting it from the hermes flake
+    "hermes-desktop" "hermes-agent" "hermes-hud"
   ];
 
   working-agents =  builtins.attrValues
-    #(builtins.removeAttrs llm-agents [ "aionui" "hermes-desktop" "showboat" ]);
     (builtins.removeAttrs llm-agents broken-agents);
 
   gpu-wrapped-agents = builtins.map config.lib.nixGL.wrappers.mesa working-agents;
+
+
+
 in
 
 {
@@ -124,7 +141,7 @@ in
 
   ] 
   ++ gpu-wrapped-agents
-  
+  ++ gpu-wrapped-hermes
   ;
 
   programs.man = {
