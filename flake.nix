@@ -42,6 +42,7 @@
       pkgs = import nixpkgs {
         inherit system;
         overlays = [ nixgl.overlay ];
+        config.allowUnfree = true;
         };
       # pkgs-kbctl = pkgs-kubectl.legacyPackages.${system};
 

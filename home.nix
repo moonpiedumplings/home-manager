@@ -115,6 +115,7 @@ in
     # various utilities
     pkgs.streamlink
     pkgs.zellij
+    (config.lib.nixGL.wrappers.mesa pkgs.dbeaver-bin)
 
     # logging
     pkgs.lnav
@@ -133,6 +134,9 @@ in
 
     # sandboxing features
     #pkgs.fence
+
+    # UI stuff for AI
+    pkgs.open-webui
 
 
     # nix dev stuff
