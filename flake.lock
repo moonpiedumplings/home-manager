@@ -81,6 +81,24 @@
     },
     "flake-parts_2": {
       "inputs": {
+        "nixpkgs-lib": "nixpkgs-lib"
+      },
+      "locked": {
+        "lastModified": 1778716662,
+        "narHash": "sha256-m1Yf0wZ8j1OHjTc2UwHwyQRSnNeSgLJOd7q5Y45hzi4=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "f7c1a2d347e4c52d5fb8d10cb4d94b5884e546fb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_3": {
+      "inputs": {
         "nixpkgs-lib": [
           "llm-agents",
           "nixpkgs"
@@ -130,11 +148,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1781044244,
-        "narHash": "sha256-O2joI2RlRWP4IZ3FJs0ZbgE9RCyP7dYw2N7c7U3Fno0=",
+        "lastModified": 1781417263,
+        "narHash": "sha256-+EVdAfAnaViEF824GI7pGrzQfwhRwp5+p3/5Bb59LEY=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "72154ad879e2acebbbf46e27f77a3a4bde3f2ea2",
+        "rev": "4b5ba112adbfdfe588b015b288bc91f873ca602b",
         "type": "github"
       },
       "original": {
@@ -150,11 +168,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781043330,
-        "narHash": "sha256-eApJsGv0lSn8OKqcBQJDFZI6Jg8coS7M8urNo3cVl9U=",
+        "lastModified": 1781365335,
+        "narHash": "sha256-zqDBhXMzfbdlO7F2bGHe7MOtB3xngd/+4ieMHDC+ZXo=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "bd4277722d215970366a405d280301a796a364fc",
+        "rev": "5b6f5733726a1b2ccafb5dec6ac4ca7299fad66c",
         "type": "github"
       },
       "original": {
@@ -163,11 +181,32 @@
         "type": "github"
       }
     },
+    "llamacpp": {
+      "inputs": {
+        "flake-parts": "flake-parts_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781401346,
+        "narHash": "sha256-L6EopGlyung7L4azrOHXZfoBaSsCqxYpB1AJrid0bH0=",
+        "owner": "ggml-org",
+        "repo": "llama.cpp",
+        "rev": "c2ba3e47a2038a2c4f51138c1843e374b174e83d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ggml-org",
+        "repo": "llama.cpp",
+        "type": "github"
+      }
+    },
     "llm-agents": {
       "inputs": {
         "blueprint": "blueprint",
         "bun2nix": "bun2nix",
-        "flake-parts": "flake-parts_2",
+        "flake-parts": "flake-parts_3",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -175,11 +214,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1781044367,
-        "narHash": "sha256-AQCqqy+o8rxywHLH7Prne1HyH4r0UjPVD7bMMhZzUvg=",
+        "lastModified": 1781415906,
+        "narHash": "sha256-WxC+F5Ce9/eKA2eoNHMK/hK5/lsGDogfjy/+aekRyhg=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "f1d6ccc01e8a93da2690a9d46a2a709da82811bb",
+        "rev": "804991490eb6dfb0b3697cbbe048cb92ac3b8df3",
         "type": "github"
       },
       "original": {
@@ -222,13 +261,28 @@
         "type": "github"
       }
     },
+    "nixpkgs-lib": {
+      "locked": {
+        "lastModified": 1777168982,
+        "narHash": "sha256-GOkGPcboWE9BmGCRMLX3worL4EMnsnG8MyKmXNeYuhQ=",
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "rev": "f5901329dade4a6ea039af1433fb087bd9c1fe14",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1780749050,
-        "narHash": "sha256-3av0pIjlOWQ6rDbNOmpUSvbNnJkGORQKKjb4LtCZsIY=",
+        "lastModified": 1781074563,
+        "narHash": "sha256-md8WlXOlfnIeHeOScMTTHFyf2d6iaTwPl2apR5EQ3P4=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "a799d3e3886da994fa307f817a6bc705ae538eeb",
+        "rev": "9ae611a455b90cf061d8f332b977e387bda8e1ca",
         "type": "github"
       },
       "original": {
@@ -367,6 +421,7 @@
       "inputs": {
         "hermes": "hermes",
         "home-manager": "home-manager",
+        "llamacpp": "llamacpp",
         "llm-agents": "llm-agents",
         "nixgl": "nixgl",
         "nixpkgs": "nixpkgs_2",

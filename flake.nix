@@ -3,9 +3,10 @@
   description = "Home Manager configuration of moonpie";
 
   nixConfig = {
-    extra-substituters = [ "https://cache.numtide.com" ];
+    extra-substituters = [ "https://cache.numtide.com"  "https://nix-community.cachix.org" ];
     extra-trusted-public-keys = [
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
   };
 
@@ -29,6 +30,12 @@
     };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # llama-cpp flake:
+     llamacpp = {
+      url = "github:ggml-org/llama.cpp";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

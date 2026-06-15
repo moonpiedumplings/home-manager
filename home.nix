@@ -50,15 +50,26 @@ let
   ];
 
   working-agents =  builtins.attrValues
-    (builtins.removeAttrs llm-agents broken-agents);
+      (builtins.removeAttrs llm-agents broken-agents);
 
-  gpu-wrapped-agents = builtins.map config.lib.nixGL.wrappers.mesa working-agents;
+  gpu-wrapped-agents = (builtins.map config.lib.nixGL.wrappers.mesa working-agents);
+
+  gpu-wrapped-agents-attrset = builtins.listToAttrs gpu-wrapped-agents;
+
+  #llamacpp = inputs.llamacpp.packages.${system};
+
+  llama-cpp = pkgs.llama-cpp.override {
+      vulkanSupport = true;
+      cudaSupport = false;
+      rocmSupport = true;
+    };
 
 
 
 in
 
 {
+
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = builtins.getEnv "USER";
@@ -80,10 +91,10 @@ in
    packages = pkgs.nixgl;
    defaultWrapper = "mesa";
    # might cause issues
-   #  vulkan.enable = true;
+   vulkan.enable = true;
   };
 
-  home.packages = [
+  home.packages = (with pkgs; [
     pkgs-kbctl.kubectl
     pkgs.fluxcd
     pkgs.kubernetes-helm
@@ -95,7 +106,7 @@ in
     pkgs.sops
     
     # kubectl plugins and tools
-    pkgs.kubectl-cnpg
+        kubectl-cnpg
     pkgs.k9s
     pkgs.kubectl-tree
     pkgs.kubectl-doctor
@@ -123,17 +134,19 @@ in
     # github cli client + copilot
     pkgs.gh
 
-    # llm agents
-    #(config.lib.nixGL.wrappers.mesa llm-agents.hermes-desktop)
-    #(config.lib.nixGL.wrappers.mesa hermes.full)
-    #(config.lib.nixGL.wrappers.mesa hermes.hermes-desktop)
-    #llm-agents.nanocoder
-    #llm-agents.omp
-    #llm-agents.opencode
-    #llm-agents.forgecode
+    # llama.cpp
+    # llamacpp.rocm
+    # llamacpp.vulkan
+    (config.lib.nixGL.wrappers.mesa llama-cpp)
 
+    # llm agents
+    (config.lib.nixGL.wrappers.mesa llm-agents.nanocoder) 
+    (config.lib.nixGL.wrappers.mesa llm-agents.kilocode-cli)
+    (config.lib.nixGL.wrappers.mesa llm-agents.goose-cli)
+    (config.lib.nixGL.wrappers.mesa llm-agents.forgecode)
+    
     # sandboxing features
-    #pkgs.fence
+    pkgs.fence
 
     # UI stuff for AI
     pkgs.open-webui
@@ -143,8 +156,8 @@ in
     pkgs.nixd
     pkgs.nil
 
-  ] 
-  ++ gpu-wrapped-agents
+  ])
+  #++ gpu-wrapped-agents
   ++ gpu-wrapped-hermes
   ;
 
@@ -185,7 +198,9 @@ in
   #  /etc/profiles/per-user/moonpie/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    # Debug variable available in the repl (after :lf .) at homeConfigurations.moonpie.config.home.sessionVariables.TYPE_OF
+    # Because nix is such a nightmare to debug that I have to do this to view the type of something declared inside the let block
+    #TYPE_OF = "${builtins.typeOf gpu-wrapped-agents}";  
   };
 
   # Let Home Manager install and manage itself.
