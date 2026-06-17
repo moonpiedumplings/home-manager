@@ -72,14 +72,14 @@ let
     owner = "ggml-org";
     repo = "llama.cpp";
     tag = "b${version}";
-    hash = "sha256-H4ZzzPE4crl4+PTprZKZiqRZ9jD9UU9D9nMUetYBY28=";
+    hash = "sha256-BQrdTEXUarGZcXU/g1w0BTx6FFDbuy738mcGINmwnGE=";
     leaveDotGit = true;
     postFetch = ''
       git -C "$out" rev-parse --short HEAD > $out/COMMIT
       find "$out" -name .git -print0 | xargs -0 rm -rf
     '';
     };
-    npmDepsHash = "sha256-T6CpsyZ1zxU9uEr/9JcmABCrtaB9aCz2EpdTS0IJzX0=";
+    npmDepsHash = "sha256-0dctM/apI3ysMIEVBaBXO9hZMWskpJpNpOws1gwiOYc=";
   }); 
 
 
