@@ -62,8 +62,25 @@ let
       vulkanSupport = true;
       cudaSupport = false;
       rocmSupport = true;
+      rocmGpuTargets = ["gfx1152"];
     };
 
+  llamacpp = llama-cpp.overrideAttrs (oldAttrs: rec {
+
+    version = "9684";
+    src = pkgs.fetchFromGitHub {
+    owner = "ggml-org";
+    repo = "llama.cpp";
+    tag = "b${version}";
+    hash = "sha256-H4ZzzPE4crl4+PTprZKZiqRZ9jD9UU9D9nMUetYBY28=";
+    leaveDotGit = true;
+    postFetch = ''
+      git -C "$out" rev-parse --short HEAD > $out/COMMIT
+      find "$out" -name .git -print0 | xargs -0 rm -rf
+    '';
+    };
+    npmDepsHash = "sha256-T6CpsyZ1zxU9uEr/9JcmABCrtaB9aCz2EpdTS0IJzX0=";
+  }); 
 
 
 in
@@ -135,9 +152,9 @@ in
     pkgs.gh
 
     # llama.cpp
-    # llamacpp.rocm
-    # llamacpp.vulkan
-    (config.lib.nixGL.wrappers.mesa llama-cpp)
+    #llamacpp.rocm
+    #(config.lib.nixGL.wrappers.mesa llamacpp.vulkan)
+    (config.lib.nixGL.wrappers.mesa llamacpp)
 
     # llm agents
     (config.lib.nixGL.wrappers.mesa llm-agents.nanocoder) 

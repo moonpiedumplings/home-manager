@@ -148,11 +148,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1781417263,
-        "narHash": "sha256-+EVdAfAnaViEF824GI7pGrzQfwhRwp5+p3/5Bb59LEY=",
+        "lastModified": 1781634725,
+        "narHash": "sha256-kO1i9713yo8Plnsvj5uzEBVpgAicxHLgYAlCvgeAAJ8=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "4b5ba112adbfdfe588b015b288bc91f873ca602b",
+        "rev": "8fa562a39923b9120d7c38e847aa4b76306d7fe9",
         "type": "github"
       },
       "original": {
@@ -168,11 +168,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781365335,
-        "narHash": "sha256-zqDBhXMzfbdlO7F2bGHe7MOtB3xngd/+4ieMHDC+ZXo=",
+        "lastModified": 1781615165,
+        "narHash": "sha256-CFF4fNNfr2GZSx1xJhBNBi7VMj8OtOqZGOV+fiBSbzw=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "5b6f5733726a1b2ccafb5dec6ac4ca7299fad66c",
+        "rev": "34dd288e65012954cf7170658e0e6a61255b0327",
         "type": "github"
       },
       "original": {
@@ -189,15 +189,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1781401346,
-        "narHash": "sha256-L6EopGlyung7L4azrOHXZfoBaSsCqxYpB1AJrid0bH0=",
+        "lastModified": 1781554209,
+        "narHash": "sha256-htbe/NLa7SfYomkWrfbsGCCdQp4YEmZHT3rrIlTQhy4=",
         "owner": "ggml-org",
         "repo": "llama.cpp",
-        "rev": "c2ba3e47a2038a2c4f51138c1843e374b174e83d",
+        "rev": "7dad2f1a17d65b5e2034c277125bc9f97573a779",
         "type": "github"
       },
       "original": {
         "owner": "ggml-org",
+        "ref": "7dad2f1a17d65b5e2034c277125bc9f97573a779",
         "repo": "llama.cpp",
         "type": "github"
       }
@@ -214,11 +215,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1781415906,
-        "narHash": "sha256-WxC+F5Ce9/eKA2eoNHMK/hK5/lsGDogfjy/+aekRyhg=",
+        "lastModified": 1781591100,
+        "narHash": "sha256-8ndljm4ics0tWVy/K9zolJiGD2LAVp9RtYnIpIpgp+o=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "804991490eb6dfb0b3697cbbe048cb92ac3b8df3",
+        "rev": "53673313e86582f3ac7050ff826158fd843c219d",
         "type": "github"
       },
       "original": {

@@ -35,7 +35,7 @@
 
     # llama-cpp flake:
      llamacpp = {
-      url = "github:ggml-org/llama.cpp";
+      url = "github:ggml-org/llama.cpp?ref=7dad2f1a17d65b5e2034c277125bc9f97573a779";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
