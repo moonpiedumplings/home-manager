@@ -1,29 +1,39 @@
-{ config, pkgs, pkgs-kbctl, hermes, llm-agents, inputs, system, ... }:
+{
+  config,
+  pkgs,
+  pkgs-kbctl,
+  hermes,
+  llm-agents,
+  inputs,
+  system,
+  ...
+}:
 
-let 
+let
   hermes = inputs.hermes.packages.${system};
 
   # borked or not needed hermes packages
-  broken-hermes = [ 
+  broken-hermes = [
     # Not needed, configkeys broken
-    "configKeys" "fix-lockfiles"
+    "configKeys"
+    "fix-lockfiles"
 
     # Duplicates that break things
-    "hermes-full" "default" "messaging"
-   ];
+    "hermes-full"
+    "default"
+    "messaging"
+  ];
 
-  working-hermes =  builtins.attrValues
-    (builtins.removeAttrs hermes broken-hermes);
+  working-hermes = builtins.attrValues (builtins.removeAttrs hermes broken-hermes);
 
   gpu-wrapped-hermes = builtins.map config.lib.nixGL.wrappers.mesa working-hermes;
-
 
   llm-agents = inputs.llm-agents.packages.${system};
   # Not all agents are working so I filter out broken ones
 
   # list of broken agents for filtering
   broken-agents = [
-    #"aionui"   
+    #"aionui"
     "showboat"
     # "backlog-md"
     # "mistral-vibe"
@@ -32,7 +42,7 @@ let
     # Not an agent
     "flake-inputs"
 
-    # This stuff seems to be failing due to npm network issues. 
+    # This stuff seems to be failing due to npm network issues.
     # It's probably my home internet rather than broken packages
     # Or it could be me being rate limited
     #"reasonix"
@@ -41,47 +51,68 @@ let
     #"gitbutler"
     "but"
     #"openclaw"
-    
+
     # conflicts with code-oss. Annoying.
     "code"
 
     # Not broken but I am getting it from the hermes flake
-    "hermes-desktop" "hermes-agent" "hermes-hud"
+    "hermes-desktop"
+    "hermes-agent"
+    "hermes-hud"
   ];
 
-  working-agents =  builtins.attrValues
-      (builtins.removeAttrs llm-agents broken-agents);
+  working-agents = builtins.attrValues (builtins.removeAttrs llm-agents broken-agents);
 
   gpu-wrapped-agents = (builtins.map config.lib.nixGL.wrappers.mesa working-agents);
 
   gpu-wrapped-agents-attrset = builtins.listToAttrs gpu-wrapped-agents;
 
   #llamacpp = inputs.llamacpp.packages.${system};
+  #
+
+  vllm = pkgs.vllm.override {
+    rocmSupport = true;
+  };
 
   llama-cpp = pkgs.llama-cpp.override {
-      vulkanSupport = true;
-      cudaSupport = false;
-      rocmSupport = true;
-      rocmGpuTargets = ["gfx1152"];
-    };
+    vulkanSupport = true;
+    cudaSupport = false;
+    rocmSupport = true;
+    rocmGpuTargets = [ "gfx1152" ];
+  };
 
   llamacpp = llama-cpp.overrideAttrs (oldAttrs: rec {
 
-    version = "9684";
+    version = "9782";
     src = pkgs.fetchFromGitHub {
-    owner = "ggml-org";
-    repo = "llama.cpp";
-    tag = "b${version}";
-    hash = "sha256-BQrdTEXUarGZcXU/g1w0BTx6FFDbuy738mcGINmwnGE=";
-    leaveDotGit = true;
-    postFetch = ''
-      git -C "$out" rev-parse --short HEAD > $out/COMMIT
-      find "$out" -name .git -print0 | xargs -0 rm -rf
-    '';
+      owner = "ggml-org";
+      repo = "llama.cpp";
+      tag = "b${version}";
+      hash = "sha256-A/8xPVf/jRu5Ck4z5bdoDzxmFVDA71YPfXRW6YaKTok=";
+      leaveDotGit = true;
+      postFetch = ''
+        git -C "$out" rev-parse --short HEAD > $out/COMMIT
+        find "$out" -name .git -print0 | xargs -0 rm -rf
+      '';
     };
-    npmDepsHash = "sha256-0dctM/apI3ysMIEVBaBXO9hZMWskpJpNpOws1gwiOYc=";
-  }); 
+    npmDepsHash = "sha256-X1DZgmhS/zHTqDT5zq0kywwntthcJ9vRXeqyO3zz6UU=";
 
+    # preFixup = ''
+    #   wrapProgram $out/bin/llama \
+    #     --set-default HSA_OVERRIDE_GFX_VERSION 11.5.1
+    # '';
+
+    # nativeBuildInputs = (with pkgs; [
+    #     cmake
+    #     installShellFiles
+    #     ninja
+    #     nodejs
+    #     npmHooks.npmConfigHook
+    #     pkg-config
+    #     spirv-headers
+    #     makeWrapper
+    #   ]);
+  });
 
 in
 
@@ -105,78 +136,80 @@ in
   # environment.
 
   targets.genericLinux.nixGL = {
-   packages = pkgs.nixgl;
-   defaultWrapper = "mesa";
-   # might cause issues
-   vulkan.enable = true;
+    packages = pkgs.nixgl;
+    defaultWrapper = "mesa";
+    # might cause issues
+    vulkan.enable = true;
   };
 
-  home.packages = (with pkgs; [
-    pkgs-kbctl.kubectl
-    pkgs.fluxcd
-    pkgs.kubernetes-helm
-    pkgs.yaml-language-server
-    pkgs.nixgl.nixGLIntel pkgs.nixgl.nixVulkanIntel
-    (config.lib.nixGL.wrappers.mesa pkgs.gzdoom)
-    (config.lib.nixGL.wrappers.mesa pkgs.ares)
-    pkgs.age
-    pkgs.sops
-    
-    # kubectl plugins and tools
-        kubectl-cnpg
-    pkgs.k9s
-    pkgs.kubectl-tree
-    pkgs.kubectl-doctor
-    pkgs.kubectl-example
-    pkgs.kubectl-view-secret
-    pkgs.kubectl-graph
-    pkgs.kubectl-images
-    pkgs.kubectl-explore
-    pkgs.kubectl-validate
-    pkgs.krelay
-    pkgs.kubectl-df-pv
-    pkgs.kubectl-node-shell
-    pkgs.kubespy
-    pkgs.kubeshark
-    pkgs.cilium-cli
+  home.packages =
+    (with pkgs; [
+      pkgs-kbctl.kubectl
+      pkgs.fluxcd
+      pkgs.kubernetes-helm
+      pkgs.yaml-language-server
+      pkgs.nixgl.nixGLIntel
+      pkgs.nixgl.nixVulkanIntel
+      (config.lib.nixGL.wrappers.mesa pkgs.gzdoom)
+      (config.lib.nixGL.wrappers.mesa pkgs.ares)
+      pkgs.age
+      pkgs.sops
 
-    # various utilities
-    pkgs.streamlink
-    pkgs.zellij
-    (config.lib.nixGL.wrappers.mesa pkgs.dbeaver-bin)
+      # kubectl plugins and tools
+      kubectl-cnpg
+      pkgs.k9s
+      pkgs.kubectl-tree
+      pkgs.kubectl-doctor
+      pkgs.kubectl-example
+      pkgs.kubectl-view-secret
+      pkgs.kubectl-graph
+      pkgs.kubectl-images
+      pkgs.kubectl-explore
+      pkgs.kubectl-validate
+      pkgs.krelay
+      pkgs.kubectl-df-pv
+      pkgs.kubectl-node-shell
+      pkgs.kubespy
+      pkgs.kubeshark
+      pkgs.cilium-cli
 
-    # logging
-    pkgs.lnav
+      # various utilities
+      pkgs.streamlink
+      pkgs.zellij
+      (config.lib.nixGL.wrappers.mesa pkgs.dbeaver-bin)
 
-    # github cli client + copilot
-    pkgs.gh
+      # logging
+      pkgs.lnav
 
-    # llama.cpp
-    #llamacpp.rocm
-    #(config.lib.nixGL.wrappers.mesa llamacpp.vulkan)
-    (config.lib.nixGL.wrappers.mesa llamacpp)
+      # github cli client + copilot
+      pkgs.gh
 
-    # llm agents
-    (config.lib.nixGL.wrappers.mesa llm-agents.nanocoder) 
-    (config.lib.nixGL.wrappers.mesa llm-agents.kilocode-cli)
-    (config.lib.nixGL.wrappers.mesa llm-agents.goose-cli)
-    (config.lib.nixGL.wrappers.mesa llm-agents.forgecode)
-    
-    # sandboxing features
-    pkgs.fence
+      # llama.cpp
+      #llamacpp.rocm
+      #(config.lib.nixGL.wrappers.mesa llamacpp.vulkan)
+      #(config.lib.nixGL.wrappers.mesa llamacpp)
+      #llamacpp
+      #vllm
 
-    # UI stuff for AI
-    pkgs.open-webui
+      # llm agents
+      (config.lib.nixGL.wrappers.mesa llm-agents.nanocoder)
+      (config.lib.nixGL.wrappers.mesa llm-agents.kilocode-cli)
+      (config.lib.nixGL.wrappers.mesa llm-agents.goose-cli)
+      (config.lib.nixGL.wrappers.mesa llm-agents.forgecode)
 
+      # sandboxing features
+      pkgs.fence
 
-    # nix dev stuff
-    pkgs.nixd
-    pkgs.nil
+      # UI stuff for AI
+      pkgs.open-webui
 
-  ])
-  #++ gpu-wrapped-agents
-  ++ gpu-wrapped-hermes
-  ;
+      # nix dev stuff
+      pkgs.nixd
+      pkgs.nil
+
+    ])
+    #++ gpu-wrapped-agents
+    ++ gpu-wrapped-hermes;
 
   programs.man = {
     enable = true;
@@ -217,7 +250,10 @@ in
   home.sessionVariables = {
     # Debug variable available in the repl (after :lf .) at homeConfigurations.moonpie.config.home.sessionVariables.TYPE_OF
     # Because nix is such a nightmare to debug that I have to do this to view the type of something declared inside the let block
-    #TYPE_OF = "${builtins.typeOf gpu-wrapped-agents}";  
+    #TYPE_OF = "${builtins.typeOf gpu-wrapped-agents}";
+    # see https://github.com/karolswdev/framework-rocm
+    # I could probably wrap llama.cpp itself but whatever
+    #wHSA_OVERRIDE_GFX_VERSION = "11.5.1";
   };
 
   # Let Home Manager install and manage itself.
