@@ -2,7 +2,6 @@
   config,
   pkgs,
   pkgs-kbctl,
-  hermes,
   llm-agents,
   inputs,
   system,
@@ -11,6 +10,7 @@
 
 let
   hermes = inputs.hermes.packages.${system};
+  maki = inputs.maki.packages.${system}.default;
 
   # borked or not needed hermes packages
   broken-hermes = [
@@ -69,33 +69,41 @@ let
 
   #llamacpp = inputs.llamacpp.packages.${system};
   #
-
-  vllm = pkgs.vllm.override {
-    rocmSupport = true;
+  #
+  pkgsRocm = import <nixpkgs> {
+    config = {
+      allowUnfree = true;
+      rocmSupport = true;
+      permittedInsecurePackages = [
+        "python3.13-vllm-0.16.0"
+      ];
+    };
   };
 
+  vllm = pkgsRocm.vllm;
+
   llama-cpp = pkgs.llama-cpp.override {
-    vulkanSupport = true;
+    vulkanSupport = false;
     cudaSupport = false;
     rocmSupport = true;
-    rocmGpuTargets = [ "gfx1152" ];
+    rocmGpuTargets = [ "gfx1151" ];
   };
 
   llamacpp = llama-cpp.overrideAttrs (oldAttrs: rec {
 
-    version = "9782";
+    version = "9992";
     src = pkgs.fetchFromGitHub {
       owner = "ggml-org";
       repo = "llama.cpp";
       tag = "b${version}";
-      hash = "sha256-A/8xPVf/jRu5Ck4z5bdoDzxmFVDA71YPfXRW6YaKTok=";
+      hash = "sha256-yWyNIVx7jVuskKywG9HQ4WpPfplMtQAWjLAFbJxPEbA=";
       leaveDotGit = true;
       postFetch = ''
         git -C "$out" rev-parse --short HEAD > $out/COMMIT
         find "$out" -name .git -print0 | xargs -0 rm -rf
       '';
     };
-    npmDepsHash = "sha256-X1DZgmhS/zHTqDT5zq0kywwntthcJ9vRXeqyO3zz6UU=";
+    npmDepsHash = "sha256-6s9skw1wzEfm9QKktTqea3J+oudQAsS6O2VnZEMXAdw=";
 
     # preFixup = ''
     #   wrapProgram $out/bin/llama \
@@ -134,13 +142,19 @@ in
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-
-  targets.genericLinux.nixGL = {
-    packages = pkgs.nixgl;
-    defaultWrapper = "mesa";
-    # might cause issues
-    vulkan.enable = true;
+  #
+  targets.genericLinux = {
+    enable = true;
+    gpu.enable = true;
   };
+
+  # targets.genericLinux.nixGL = {
+  #   packages = null;
+  #   #packages = pkgs.nixgl;
+  #   defaultWrapper = "mesa";
+  #   # might cause issues
+  #   vulkan.enable = true;
+  # };
 
   home.packages =
     (with pkgs; [
@@ -148,10 +162,6 @@ in
       pkgs.fluxcd
       pkgs.kubernetes-helm
       pkgs.yaml-language-server
-      pkgs.nixgl.nixGLIntel
-      pkgs.nixgl.nixVulkanIntel
-      (config.lib.nixGL.wrappers.mesa pkgs.gzdoom)
-      (config.lib.nixGL.wrappers.mesa pkgs.ares)
       pkgs.age
       pkgs.sops
 
@@ -192,10 +202,12 @@ in
       #vllm
 
       # llm agents
-      (config.lib.nixGL.wrappers.mesa llm-agents.nanocoder)
-      (config.lib.nixGL.wrappers.mesa llm-agents.kilocode-cli)
-      (config.lib.nixGL.wrappers.mesa llm-agents.goose-cli)
-      (config.lib.nixGL.wrappers.mesa llm-agents.forgecode)
+      llm-agents.nanocoder
+      llm-agents.kilocode-cli
+      llm-agents.goose-cli
+      llm-agents.forgecode
+      maki
+
 
       # sandboxing features
       pkgs.fence
@@ -207,9 +219,13 @@ in
       pkgs.nixd
       pkgs.nil
 
+      # games and fun
+      pkgs.gzdoom pkgs.ares
+
     ])
     #++ gpu-wrapped-agents
-    ++ gpu-wrapped-hermes;
+    #++ gpu-wrapped-hermes
+    ;
 
   programs.man = {
     enable = true;
