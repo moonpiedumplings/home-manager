@@ -46,7 +46,8 @@
 
   outputs = inputs@{
             nixgl,
-            nixpkgs, pkgs-kubectl, hermes, maki, llm-agents,
+            nixpkgs, pkgs-kubectl,
+            #hermes, maki, llm-agents,
             home-manager, ... }:
     let
       system = "${builtins.currentSystem}";
@@ -62,7 +63,9 @@
         inherit pkgs;
 
         extraSpecialArgs = {
-           inherit inputs system hermes maki llm-agents nixgl;
+           inherit inputs system
+           #hermes maki llm-agents
+           nixgl;
           pkgs-kbctl = import pkgs-kubectl { inherit system; };
         };
 

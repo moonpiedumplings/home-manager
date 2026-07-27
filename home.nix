@@ -2,7 +2,6 @@
   config,
   pkgs,
   pkgs-kbctl,
-  llm-agents,
   inputs,
   system,
   ...
@@ -206,6 +205,10 @@ in
       llm-agents.kilocode-cli
       llm-agents.goose-cli
       llm-agents.forgecode
+      llm-agents.hermes-agent
+      llm-agents.hermes-desktop
+      llm-agents.hermes-hud
+      llm-agents.pi
       maki
 
 
@@ -232,19 +235,23 @@ in
     generateCaches = true;
   };
 
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
-  home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
+  nix = {
+    # Since NIX_PATH seems to lead to a missing file now, this is how it's fixed
+    # Benefit of this is that all nix channel stuff now uses the same version as the home manager flake.
+    channels.nixpkgs = inputs.nixpkgs;
+    nixPath = [
+        "$HOME/.nix-defexpr/channels"
+      ];
+    # Deletes old nix channels registry which was dead
+    keepOldNixPath = false;
+    # Same thing, now the nix flake registry is pinned as well
+    # nix shell nixpkgs#test will use home manager's nixpkgs and dependencies
+    # This prevents auto updattes and then massive duplication of depencies of nix flake stuff.
+    registry.nixpkgs.flake = inputs.nixpkgs;
+  };
 
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
+
+  home.file = {
   };
 
   # Home Manager can also manage your environment variables through
