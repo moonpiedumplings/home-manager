@@ -8,67 +8,10 @@
 }:
 
 let
-  hermes = inputs.hermes.packages.${system};
+  llm-agents = inputs.llm-agents.packages.${system};
   maki = inputs.maki.packages.${system}.default;
 
-  # borked or not needed hermes packages
-  broken-hermes = [
-    # Not needed, configkeys broken
-    "configKeys"
-    "fix-lockfiles"
-
-    # Duplicates that break things
-    "hermes-full"
-    "default"
-    "messaging"
-  ];
-
-  working-hermes = builtins.attrValues (builtins.removeAttrs hermes broken-hermes);
-
-  gpu-wrapped-hermes = builtins.map config.lib.nixGL.wrappers.mesa working-hermes;
-
-  llm-agents = inputs.llm-agents.packages.${system};
-  # Not all agents are working so I filter out broken ones
-
-  # list of broken agents for filtering
-  broken-agents = [
-    #"aionui"
-    "showboat"
-    # "backlog-md"
-    # "mistral-vibe"
-    # "codex"
-
-    # Not an agent
-    "flake-inputs"
-
-    # This stuff seems to be failing due to npm network issues.
-    # It's probably my home internet rather than broken packages
-    # Or it could be me being rate limited
-    #"reasonix"
-    #"paseo-desktop"
-    "codegraph"
-    #"gitbutler"
-    "but"
-    #"openclaw"
-
-    # conflicts with code-oss. Annoying.
-    "code"
-
-    # Not broken but I am getting it from the hermes flake
-    "hermes-desktop"
-    "hermes-agent"
-    "hermes-hud"
-  ];
-
-  working-agents = builtins.attrValues (builtins.removeAttrs llm-agents broken-agents);
-
-  gpu-wrapped-agents = (builtins.map config.lib.nixGL.wrappers.mesa working-agents);
-
-  gpu-wrapped-agents-attrset = builtins.listToAttrs gpu-wrapped-agents;
-
   #llamacpp = inputs.llamacpp.packages.${system};
-  #
-  #
   pkgsRocm = import <nixpkgs> {
     config = {
       allowUnfree = true;
@@ -236,22 +179,25 @@ in
   };
 
   nix = {
-    # Since NIX_PATH seems to lead to a missing file now, this is how it's fixed
-    # Benefit of this is that all nix channel stuff now uses the same version as the home manager flake.
-    channels.nixpkgs = inputs.nixpkgs;
-    nixPath = [
-        "$HOME/.nix-defexpr/channels"
-      ];
-    # Deletes old nix channels registry which was dead
-    keepOldNixPath = false;
-    # Same thing, now the nix flake registry is pinned as well
     # nix shell nixpkgs#test will use home manager's nixpkgs and dependencies
-    # This prevents auto updattes and then massive duplication of depencies of nix flake stuff.
+    # This prevents auto updattes and then massive duplication of dependencies of nix flake stuff.
     registry.nixpkgs.flake = inputs.nixpkgs;
   };
 
 
   home.file = {
+    # Adjusting nix.channels, nix.path and similar requires home manager to be managing the shell and env variables
+    # Since home manager isn't, I just directly symlink the empty channels directory to home managers nixpkgs flake.
+    # This fixes channels not working, since they disappeared on me
+    ".nix-defexpr/channels" = {
+        source = (pkgs.linkFarm "home-manager-channels" [
+           {
+             name = "nixpkgs";
+             path = inputs.nixpkgs;
+           }
+         ]);
+        recursive = false;
+      };
   };
 
   # Home Manager can also manage your environment variables through
