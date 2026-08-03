@@ -73,18 +73,16 @@ in
   home.username = builtins.getEnv "USER";
   home.homeDirectory = builtins.getEnv "HOME";
 
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
-  # release notes.
-  home.stateVersion = "25.11"; # Please read the comment before changing.
 
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
-  #
+
+  # You're not supposed to update this value because it changes config options and is not guaranteed to be compatible
+  # But because I use home manager exclusively for packages, and not at all for config, I can safely update this to the latest version pretty much always
+  home.stateVersion = "25.11";
+  # Prevent generation of home-configuration.nix manpage (not all packages)
+  # Prevents a warning about something being unreliable
+  manual.manpages.enable = false;
+
+  # Enables GPU acceleration for all Nix pacakges, not just home manager one's.
   targets.genericLinux = {
     enable = true;
     gpu.enable = true;
@@ -128,7 +126,7 @@ in
       # various utilities
       pkgs.streamlink
       pkgs.zellij
-      (config.lib.nixGL.wrappers.mesa pkgs.dbeaver-bin)
+      pkgs.dbeaver-bin
 
       # logging
       pkgs.lnav

@@ -12,7 +12,7 @@
 
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     pkgs-kubectl.url = "github:nixos/nixpkgs/e6f23dc08d3624daab7094b701aa3954923c6bbb";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -20,7 +20,7 @@
     };
     nixgl = {
       url = "github:nix-community/nixGL";
-      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
       };
 
     # llm agents and stuff
@@ -77,5 +77,7 @@
         # to pass through arguments to home.nix
 
       };
+
+      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
     };
 }
