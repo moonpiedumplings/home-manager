@@ -98,6 +98,9 @@ in
 
   home.packages =
     (with pkgs; [
+      # nix cli helper
+      nh
+
       pkgs-kbctl.kubectl
       pkgs.fluxcd
       pkgs.kubernetes-helm
@@ -152,7 +155,6 @@ in
       llm-agents.pi
       maki
 
-
       # sandboxing features
       pkgs.fence
 
@@ -180,6 +182,21 @@ in
     # nix shell nixpkgs#test will use home manager's nixpkgs and dependencies
     # This prevents auto updattes and then massive duplication of dependencies of nix flake stuff.
     registry.nixpkgs.flake = inputs.nixpkgs;
+
+    package = pkgs.nix;
+    settings = {
+      flake-registry = "${config.xdg.configHome}/nix/project-registry.json";
+      extra-experimental-features = [ "nix-command" "flakes" ];
+      extra-trusted-substituters = [
+            "https://nix-community.cachix.org"
+            "https://cache.numtide.com"
+          ];
+
+          extra-trusted-public-keys = [
+            "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+            "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+          ];
+    };
   };
 
 

@@ -24,10 +24,6 @@
       };
 
     # llm agents and stuff
-    hermes = {
-      url = "github:NousResearch/hermes-agent";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     maki = {
       url = "github:tontinton/maki";
       inputs.nixpkgs.follows = "nixpkgs";
