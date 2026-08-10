@@ -55,7 +55,9 @@
       # pkgs-kbctl = pkgs-kubectl.legacyPackages.${system};
 
     in {
-      homeConfigurations."${builtins.getEnv "USER"}" = home-manager.lib.homeManagerConfiguration {
+      # To switch with nh and see the updated packages:
+      # nh home switch . -c default --impure
+      homeConfigurations.default = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
         extraSpecialArgs = {
@@ -67,7 +69,17 @@
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
-        modules = [ ./home.nix ];
+        modules = [
+          ./home.nix
+          {
+                  home.username = builtins.getEnv "USER";
+                  home.homeDirectory =
+                    if builtins.getEnv "USER" == "root"
+                    then "/root"
+                    else "/home/${builtins.getEnv "USER"}";
+          }
+
+        ];
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
