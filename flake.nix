@@ -14,6 +14,10 @@
     # Specify the source of Home Manager and Nixpkgs.
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     pkgs-kubectl.url = "github:nixos/nixpkgs/e6f23dc08d3624daab7094b701aa3954923c6bbb";
+    # Can get any version of a package from nixpkgs
+    multiverse = {
+      url = "github:fzakaria/nixpkgs-multiverse";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -42,7 +46,7 @@
 
   outputs = inputs@{
             nixgl,
-            nixpkgs, pkgs-kubectl,
+            nixpkgs, multiverse,
             #hermes, maki, llm-agents,
             home-manager, ... }:
     let
@@ -52,7 +56,6 @@
         overlays = [ nixgl.overlay ];
         config.allowUnfree = true;
         };
-      # pkgs-kbctl = pkgs-kubectl.legacyPackages.${system};
 
     in {
       # To switch with nh and see the updated packages:
@@ -63,8 +66,8 @@
         extraSpecialArgs = {
            inherit inputs system
            #hermes maki llm-agents
-           nixgl;
-          pkgs-kbctl = import pkgs-kubectl { inherit system; };
+           #nixgl
+           ;
         };
 
         # Specify your home configuration modules here, for example,

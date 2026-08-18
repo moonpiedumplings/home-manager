@@ -1,13 +1,18 @@
 {
   config,
   pkgs,
-  pkgs-kbctl,
   inputs,
   system,
   ...
 }:
 
 let
+  # Get a specific version of a package via pkgname."versionnumber"
+  multiverse = inputs.multiverse.multiverse.${system}.versions;
+  # .fast gets packages without evaluating or caching nixpkgs, preventing store bloat. But it doesn't work for certain packages.
+  # Also, packages need to be appended with .out
+  # see: https://github.com/fzakaria/nixpkgs-multiverse/blob/main/docs/nix-api.md#the-fast-path
+  fastverse = inputs.multiverse.multiverse.${system}.fast.versions;
   llm-agents = inputs.llm-agents.packages.${system};
   maki = inputs.maki.packages.${system}.default;
 
@@ -101,41 +106,38 @@ in
       # nix cli helper
       nh
 
-      pkgs-kbctl.kubectl
-      pkgs.fluxcd
-      pkgs.kubernetes-helm
-      pkgs.yaml-language-server
-      pkgs.age
-      pkgs.sops
+      multiverse.kubectl."1.33.1"
+      fluxcd
+      kubernetes-helm
+      yaml-language-server
+      age
+      sops
 
       # kubectl plugins and tools
+      k9s
       kubectl-cnpg
-      pkgs.k9s
-      pkgs.kubectl-tree
-      pkgs.kubectl-doctor
-      pkgs.kubectl-example
-      pkgs.kubectl-view-secret
-      pkgs.kubectl-graph
-      pkgs.kubectl-images
-      pkgs.kubectl-explore
-      pkgs.kubectl-validate
-      pkgs.krelay
-      pkgs.kubectl-df-pv
-      pkgs.kubectl-node-shell
-      pkgs.kubespy
-      pkgs.kubeshark
-      pkgs.cilium-cli
+      kubectl-view-secret
+      #kubectl object inspection
+      kubectl-tree kubectl-graph
+      # docs and examples
+      kubectl-example kubectl-explore  kubectl-validate
+      # cluster info
+      kubectl-df-pv kubectl-images
+      #debugging, pod/nod
+      kubectl-node-shell kubespy kubectl-doctor
+      # network utilities
+      krelay kubeshark cilium-cli
 
       # various utilities
-      pkgs.streamlink
-      pkgs.zellij
-      pkgs.dbeaver-bin
+      streamlink
+      zellij
+      dbeaver-bin
 
       # logging
-      pkgs.lnav
+      lnav
 
       # github cli client + copilot
-      pkgs.gh
+      gh
 
       # llama.cpp
       #llamacpp.rocm
@@ -162,11 +164,10 @@ in
       pkgs.open-webui
 
       # nix dev stuff
-      pkgs.nixd
-      pkgs.nil
+      nixd nil
 
       # games and fun
-      pkgs.gzdoom pkgs.ares
+      gzdoom ares
 
     ])
     #++ gpu-wrapped-agents
