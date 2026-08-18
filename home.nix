@@ -7,6 +7,8 @@
 }:
 
 let
+  # multiverse cli
+  mvs = inputs.multiverse.packages.${system}.mvs;
   # Get a specific version of a package via pkgname."versionnumber"
   multiverse = inputs.multiverse.multiverse.${system}.versions;
   # .fast gets packages without evaluating or caching nixpkgs, preventing store bloat. But it doesn't work for certain packages.
@@ -105,6 +107,8 @@ in
     (with pkgs; [
       # nix cli helper
       nh
+      # multiverse cli for running specfic versions
+      mvs
 
       multiverse.kubectl."1.33.1"
       fluxcd
