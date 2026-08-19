@@ -11,10 +11,14 @@ let
   mvs = inputs.multiverse.packages.${system}.mvs;
   # Get a specific version of a package via pkgname."versionnumber"
   multiverse = inputs.multiverse.multiverse.${system}.versions;
-  # .fast gets packages without evaluating or caching nixpkgs, preventing store bloat. But it doesn't work for certain packages.
+  # .fast gets packages without evaluating or caching nixpkgs, preventing store bloat.
   # Also, packages need to be appended with .out
   # see: https://github.com/fzakaria/nixpkgs-multiverse/blob/main/docs/nix-api.md#the-fast-path
-  fastverse = inputs.multiverse.multiverse.${system}.fast.versions;
+  fastverse =
+    pkgs.lib.mapAttrsRecursiveCond
+      (x: !pkgs.lib.isDerivation x)
+      (_path: drv: drv.out)
+      inputs.multiverse.multiverse.${system}.fast.versions;
   llm-agents = inputs.llm-agents.packages.${system};
   maki = inputs.maki.packages.${system}.default;
 
@@ -110,7 +114,7 @@ in
       # multiverse cli for running specfic versions
       mvs
 
-      multiverse.kubectl."1.33.1"
+      fastverse.kubectl."1.33.1"
       fluxcd
       kubernetes-helm
       yaml-language-server
